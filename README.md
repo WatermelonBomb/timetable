@@ -69,4 +69,4 @@ MIT License
 プロジェクトへの貢献は歓迎します。Issueの報告やPull Requestをお待ちしています。
 
 ## 作者
-[作者名] 
+WatermelonBomb
