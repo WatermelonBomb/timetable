@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>シケプリ×時間割共有アプリ</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <h1>シケプリ×時間割</h1>
+            </div>
+            <div class="nav-links">
+                <a href="#" class="nav-link" id="homeLink">ホーム</a>
+                <a href="#" class="nav-link" id="timetableLink">時間割</a>
+                <a href="#" class="nav-link" id="notificationLink">通知設定</a>
+                <a href="#" class="nav-link" id="logoutBtn" style="display: none;">ログアウト</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <!-- メインページ -->
+        <div class="container" id="mainPage">
+            <div class="welcome-section">
+                <h1>ようこそ、<span id="userName"></span>さん</h1>
+            </div>
+
+            <!-- 投稿フォーム -->
+            <div class="post-form">
+                <textarea id="postContent" placeholder="今何してる？"></textarea>
+                <button id="submitPost">投稿する</button>
+            </div>
+
+            <!-- 投稿一覧 -->
+            <div id="postsContainer" class="posts-container">
+                <!-- 投稿がここに動的に追加されます -->
+            </div>
+        </div>
+
+        <!-- 時間割ページ -->
+        <div class="container" id="timetablePage" style="display: none;">
+            <div class="timetable-container">
+                <div class="timetable-header">
+                    <h2>時間割</h2>
+                    <button class="add-class-btn" id="addClassBtn">
+                        <i class="fas fa-plus"></i> 授業を追加
+                    </button>
+                </div>
+                <div class="timetable-grid">
+                    <div id="timetable"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- シケプリページ -->
+        <div class="container" id="shikepriPage" style="display: none;">
+            <div class="shikepri-container">
+                <h2>シケプリ</h2>
+                <p>シケプリ機能は現在開発中です。</p>
+            </div>
+        </div>
+
+        <!-- 通知設定ページ -->
+        <div class="container" id="notificationPage" style="display: none;">
+            <div class="notification-container">
+                <h2>通知設定</h2>
+                <form id="notificationForm">
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="emailNotifications" name="emailNotifications">
+                            メール通知
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="pushNotifications" name="pushNotifications">
+                            プッシュ通知
+                        </label>
+                    </div>
+                    <button type="submit">設定を保存</button>
+                    <button type="button" id="testNotification">テスト通知を送信</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- ログインモーダル -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>ログイン</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="loginEmail">メールアドレス</label>
+                    <input type="email" id="loginEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">パスワード</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                <button type="submit">ログイン</button>
+            </form>
+            <div class="auth-switch">
+                <p>アカウントをお持ちでない方は<a href="#" id="showSignup">サインイン</a>してください。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- サインインモーダル -->
+    <div id="signupModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>サインイン</h2>
+            <form id="signupForm">
+                <div class="form-group">
+                    <label for="signupName">名前</label>
+                    <input type="text" id="signupName" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupEmail">メールアドレス</label>
+                    <input type="email" id="signupEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupPassword">パスワード</label>
+                    <input type="password" id="signupPassword" required minlength="8">
+                    <small>※8文字以上で入力してください</small>
+                </div>
+                <div class="form-group">
+                    <label for="signupPasswordConfirm">パスワード（確認）</label>
+                    <input type="password" id="signupPasswordConfirm" required minlength="8">
+                </div>
+                <button type="submit">サインイン</button>
+            </form>
+            <div class="auth-switch">
+                <p>すでにアカウントをお持ちの方は<a href="#" id="showLogin">ログイン</a>してください。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 授業追加モーダル -->
+    <div id="addClassModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>授業を追加</h2>
+            <form id="addClassForm">
+                <div class="form-group">
+                    <label for="dayOfWeek">曜日</label>
+                    <select id="dayOfWeek" required>
+                        <option value="0">月曜日</option>
+                        <option value="1">火曜日</option>
+                        <option value="2">水曜日</option>
+                        <option value="3">木曜日</option>
+                        <option value="4">金曜日</option>
+                        <option value="5">土曜日</option>
+                        <option value="6">日曜日</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="period">時限</label>
+                    <select id="period" required>
+                        <option value="1">1限</option>
+                        <option value="2">2限</option>
+                        <option value="3">3限</option>
+                        <option value="4">4限</option>
+                        <option value="5">5限</option>
+                        <option value="6">6限</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="subjectName">科目名</label>
+                    <input type="text" id="subjectName" required>
+                </div>
+                <div class="form-group">
+                    <label for="classroom">教室</label>
+                    <input type="text" id="classroom">
+                </div>
+                <div class="form-group">
+                    <label for="colorCode">色</label>
+                    <input type="color" id="colorCode" value="#4a90e2">
+                </div>
+                <button type="submit">追加</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+</body>
+</html> 
